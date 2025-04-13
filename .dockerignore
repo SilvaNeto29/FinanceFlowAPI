@@ -1,0 +1,31 @@
+# Ignora dependências locais (serão instaladas via composer dentro do container)
+vendor/
+
+# Ignora configurações locais
+.env
+.env.*
+
+# Ignora arquivos do sistema
+.DS_Store
+Thumbs.db
+
+# Ignora IDEs e editores
+*.log
+*.sqlite
+*.sqlite3
+*.db
+*.bak
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+
+# Git
+.git
+.gitignore
+
+# Docker build cache
+node_modules/
+npm-debug.log
+docker-compose.override.yml
