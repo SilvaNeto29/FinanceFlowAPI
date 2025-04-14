@@ -6,7 +6,16 @@ use Medoo\Medoo;
 
 abstract class Model
 {
+    /**
+     * Database table name.
+     * @var string
+     */
     protected string $table;
+
+    /**
+     * Database connection instance.
+     * @var Medoo|null
+     */
     protected Medoo $db;
 
     public function __construct(Medoo $db)

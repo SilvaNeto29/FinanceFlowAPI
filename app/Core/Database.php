@@ -6,6 +6,7 @@ use Medoo\Medoo;
 
 class Database
 {
+    /** @var Medoo|null */
     private static $instance = null;
 
     public static function connect(): Medoo

@@ -7,7 +7,7 @@ $router->get('/api/ping', function () {
     echo json_encode(['pong' => true]);
 });
 
-$router->get('/db', function () {
+$router->get('/db', function (): void {
     $user = new User();
     echo json_encode($user->busca());
 });   

@@ -3,7 +3,7 @@
         'name' => 'seuuser/financeflowapi',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => '666cdfccd9bff04074840a4274713d59408c3ca6',
+        'reference' => 'f47f9511976e4092c6a526026f335c048608024a',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -144,6 +144,15 @@
             'install_path' => __DIR__ . '/../phpoption/phpoption',
             'aliases' => array(),
             'dev_requirement' => false,
+        ),
+        'phpstan/phpstan' => array(
+            'pretty_version' => '2.1.11',
+            'version' => '2.1.11.0',
+            'reference' => '8ca5f79a8f63c49b2359065832a654e1ec70ac30',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../phpstan/phpstan',
+            'aliases' => array(),
+            'dev_requirement' => true,
         ),
         'phpunit/php-code-coverage' => array(
             'pretty_version' => '10.1.16',
@@ -439,7 +448,7 @@
         'seuuser/financeflowapi' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => '666cdfccd9bff04074840a4274713d59408c3ca6',
+            'reference' => 'f47f9511976e4092c6a526026f335c048608024a',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
