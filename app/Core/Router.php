@@ -38,8 +38,6 @@ class Router
         $uri = $this->request->uri();
         $route = $this->routes[$method][$uri] ?? null;
 
-        var_dump($uri);exit;
-
         if (!$route) {
             http_response_code(404);
             echo json_encode(['error' => 'Rota não encontrada']);

@@ -4,9 +4,9 @@ namespace App\Core;
 
 use Medoo\Medoo;
 
-abstract class BaseModel
+abstract class Model
 {
-    protected static string $table;
+    protected string $table;
     protected Medoo $db;
 
     public function __construct(Medoo $db)
