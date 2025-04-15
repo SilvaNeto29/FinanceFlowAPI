@@ -1,12 +1,12 @@
-<?
+<?php
 
 namespace App\Helpers;
 
-class RouterHelper 
+class RouterHelper
 {
-    static function returnRequest(int $status, array $message): string {
-        http_response_code($status);
-        return json_encode($message);
+    public static function respond(int $statusCode, array $message)
+    {
+        http_response_code($statusCode);
+        echo json_encode($message);
     }
 }
-

@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Core;
+use App\Helpers\RouterHelper;
 
 class Router
 {
@@ -39,8 +40,7 @@ class Router
         $route = $this->routes[$method][$uri] ?? null;
 
         if (!$route) {
-            http_response_code(404);
-            echo json_encode(['error' => 'Rota nao encontrada']);
+            RouterHelper::respond(404, ['error' => 'Rota nao encontrada']);
             return;
         }
 
