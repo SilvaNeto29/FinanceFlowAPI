@@ -5,7 +5,8 @@ require __DIR__ . '/../vendor/autoload.php';
 use App\Core\Router;
 use App\Core\Request;
 
-$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../');
+// Ajuste o caminho para o arquivo .env
+$dotenv = \Dotenv\Dotenv::createImmutable(dirname(__DIR__));
 $dotenv->load();
 
 $request = new Request();

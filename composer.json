@@ -21,6 +21,9 @@
     "process-timeout": 3000
     },
     "scripts": {
-      "phpstan": "vendor/bin/phpstan analyse -l 6 app"
+      "phpstan": "vendor/bin/phpstan analyse -l 6 app",
+      "runserver": "php -S localhost:8000 -t public",
+      "docker-build": "docker build -t financeflow-api .",
+      "docker-run": "docker run -d -p 8000:80 --name financeflow-container financeflow-api"
     }
 }

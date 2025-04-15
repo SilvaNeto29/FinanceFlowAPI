@@ -40,7 +40,7 @@ class Router
 
         if (!$route) {
             http_response_code(404);
-            echo json_encode(['error' => 'Rota não encontrada']);
+            echo json_encode(['error' => 'Rota nao encontrada']);
             return;
         }
 
