@@ -8,14 +8,17 @@ use Medoo\Medoo;
 
 class User extends Model {
     protected Medoo $db;
-    protected string $table;
 
     public function __construct() {
         $this->db = Database::connect();
-        $this->table = "user";
+        static::$table = "user";
     }
 
-    public function busca() {
-        return $this->db->get($this->table, "*");
-    }    
+    public function get(int $id) {
+        return $this->db->get(static::$table, "*", `id = $id`);
+    }
+    
+    public function getAll() {
+        return $this->db->select(static::$table ,"*");
+    }   
 }

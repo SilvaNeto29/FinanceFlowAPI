@@ -10,11 +10,11 @@ abstract class Model
      * Database table name.
      * @var string
      */
-    protected string $table;
+    protected static string $table;
 
     /**
      * Database connection instance.
-     * @var Medoo|null
+     * @var Medoo
      */
     protected Medoo $db;
 
@@ -22,29 +22,40 @@ abstract class Model
     {
         $this->db = $db;
     }
-
+    /**
+     * @param int $id
+     * @return array<string,mixed>|null
+    */
     public function find(int $id): ?array
     {
         return $this->db->get(static::$table, '*', ['id' => $id]) ?: null;
     }
-
-    public function all(): array
+    /**
+     * @return array<string,mixed>|null
+    */
+    public function all(): ?array
     {
         return $this->db->select(static::$table, '*');
     }
-
-    public function create(array $data): bool
+    /**
+     * @return int
+    */
+    public function create(array $data): int
     {
         $this->db->insert(static::$table, $data);
         return $this->db->id() !== 0;
     }
-
+    /**
+     * @return boolean
+    */
     public function update(int $id, array $data): bool
     {
         $this->db->update(static::$table, $data, ['id' => $id]);
         return $this->db->error === [null, null, null];
     }
-
+    /**
+     * @return boolean
+    */
     public function delete(int $id): bool
     {
         $this->db->delete(static::$table, ['id' => $id]);
