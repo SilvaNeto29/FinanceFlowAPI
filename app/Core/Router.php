@@ -37,18 +37,26 @@ class Router
     {
         $method = $this->request->method();
         $uri = $this->request->uri();
-        $route = $this->routes[$method][$uri] ?? null;
 
-        if (!$route) {
-            RouterHelper::respond(404, ['error' => 'Rota nao encontrada']);
-            return;
+        foreach ($this->routes[$method] ?? [] as $path => $routeData) {
+
+            $pattern = preg_replace('/\{([a-zA-Z_]+)\}/', '([^\/]+)', $path);
+            $pattern = '#^' . $pattern . '$#';
+
+            if (preg_match($pattern, $uri, $matches)) {
+                array_shift($matches);
+                $params = $matches; 
+
+                if ($routeData['middleware']) {
+                    $middleware = new $routeData['middleware'];
+                    if (!$middleware->handle($this->request/*, $params*/)) return;
+                }
+                call_user_func_array($routeData['callback'], $params);
+                return; 
+            }
         }
 
-        if ($route['middleware']) {
-            $middleware = new $route['middleware'];
-            if (!$middleware->handle($this->request)) return;
-        }
-
-        call_user_func($route['callback'], $this->request);
+        RouterHelper::respond(['error' => 'Route not found'],404);
+        exit;
     }
 }

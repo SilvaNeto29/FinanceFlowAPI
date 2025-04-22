@@ -15,10 +15,17 @@ class User extends Model {
     }
 
     public function get(int $id) {
-        return $this->db->get(static::$table, "*", `id = $id`);
+        return $this->db->get(
+            static::$table, 
+            ['name','doc','age','phone'], 
+            ['id' => $id]
+        );
     }
     
     public function getAll() {
-        return $this->db->select(static::$table ,"*");
+        return $this->db->select(
+            static::$table ,
+            ['name','doc','age','phone']
+        );
     }   
 }
