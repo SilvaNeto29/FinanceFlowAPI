@@ -15,5 +15,5 @@ class RouterHelper
         if (!is_numeric($i) || (int)$i <= 0) {
             static::respond(['error'=> 'Unformated ID'],400);
         }
-    }
+    }//
 }
