@@ -16,10 +16,10 @@ class Database
 
             self::$instance = new Medoo([
                 'type'     => $env['DB_TYPE'],
-                'host'     => $env['DB_HOST'],
                 'database' => $env['DB_NAME'],
-                'username' => $env['DB_USER'],
-                'password' => $env['DB_PASS'],
+                'host'     => $env['DB_TYPE'] !== 'sqlite' ? $env['DB_HOST'] : null,
+                'username' => $env['DB_TYPE'] !== 'sqlite' ? $env['DB_USER'] : null,
+                'password' => $env['DB_TYPE'] !== 'sqlite' ? $env['DB_PASS'] : null,
                 'charset'  => 'utf8mb4'
             ]);
         }
