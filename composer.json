@@ -1,5 +1,5 @@
 {
-    "name": "seuuser/financeflowapi",
+    "name": "silvaneto29/financeflowapi",
     "description": "API REST para controle financeiro em PHP puro",
     "type": "project",
     "autoload": {
@@ -10,7 +10,9 @@
     "require": {
       "vlucas/phpdotenv": "^5.5",
       "firebase/php-jwt": "^6.11",
-        "catfan/medoo": "^2.2"
+        "catfan/medoo": "^2.2",
+        "doctrine/migrations": "^3.9",
+        "doctrine/dbal": "^4.2"
     },
     "require-dev": {
       "phpunit/phpunit": "^10.0",
@@ -24,6 +26,8 @@
       "phpstan": "vendor/bin/phpstan analyse -l 5 app",
       "runserver": "php -S localhost:8000 -t public",
       "docker-build": "docker build -t financeflow-api .",
-      "docker-run": "docker run -d -p 8000:80 --name financeflow-container financeflow-api"
+      "docker-run": "docker run -d -p 8000:80 --name financeflow-container financeflow-api",
+      "generate_migration": "./vendor/bin/doctrine-migrations generate",
+      "migrate": "./vendor/bin/doctrine-migrations migrate"
     }
 }
