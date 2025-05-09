@@ -12,8 +12,14 @@ class RouterHelper
     }
 
     public static function isInt($i){
-        if (!is_numeric($i) || (int)$i <= 0) {
+        if (!is_numeric($i) || (int) $i <= 0) {
             static::respond(['error'=> 'Unformated ID'],400);
         }
-    }//
+    }
+
+    public static function isString($i){
+        if (!is_string($i) || (string) $i <= 0) {
+            static::respond(['error'=> 'Unformated Doc'],400);
+        }
+    }
 }

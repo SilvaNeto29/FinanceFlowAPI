@@ -22,6 +22,14 @@ class User extends Model {
         );
     }
     
+    public function getByDoc(string $doc) {
+        return $this->db->get(
+            static::$table, 
+            ['name','doc','age','phone'], 
+            ['doc' => $doc]
+        );
+    }
+
     public function getAll() {
         return $this->db->select(
             static::$table ,
