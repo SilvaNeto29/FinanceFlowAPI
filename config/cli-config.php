@@ -12,11 +12,12 @@ $env = parse_ini_file(__DIR__ . '/../.env');
 
 $conn = DriverManager::getConnection([
         'driver'     => $env['DB_DRIVER'],
-        'path'     => $env['DB_TYPE'] === 'sqlite3' ? $env['DB_PATH'] : null,
-        'host'     => $env['DB_TYPE'] !== 'sqlite3' ? $env['DB_HOST'] : null,
+        'path'     => $env['DB_TYPE'] === 'sqlite' ? $env['DB_PATH'] : null,
+        'host'     => $env['DB_TYPE'] !== 'sqlite' ? $env['DB_HOST'] : null,
         'dbname' => $env['DB_NAME'],
         'user' => $env['DB_USER'],
-        'password' => $env['DB_PASS'],
-        'charset'  => 'utf8mb4']);
+        'password' => $env['DB_PASSWORD'],
+        'charset'  => 'utf8mb4'
+]);
 
 return DependencyFactory::fromConnection($config, new ExistingConnection($conn));

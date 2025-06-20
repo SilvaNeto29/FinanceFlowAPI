@@ -27,11 +27,11 @@ final class Version20250426150722 extends AbstractMigration
             CREATE TABLE IF NOT EXISTS users (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 name VARCHAR(100) NOT NULL,
-                age INTEGER,
+                username VARCHAR(50) NOT NULL,
                 email VARCHAR(150) NOT NULL UNIQUE,
-                doc VARCHAR(20) NOT NULL,
                 password VARCHAR(255) NOT NULL,
-                created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
             )
         ');
 

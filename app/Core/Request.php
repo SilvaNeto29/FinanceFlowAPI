@@ -16,7 +16,7 @@ class Request
 
     public function body()
     {
-        return json_decode(file_get_contents('php://input'), true);
+        return json_decode(file_get_contents('php://input'));
     }
 
     public function header(string $key): ?string
