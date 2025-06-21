@@ -3,7 +3,7 @@
 namespace App\Controllers;
 
 use App\Core\Request;
-use App\Core\Response;
+use App\Models\RefreshTokens;
 use Firebase\JWT\JWT;
 use App\Helpers\RouterHelper;
 use App\Models\User;
@@ -11,38 +11,39 @@ use Exception;
 
 class AuthController
 {
-    private const ACCESS_TOKEN_DURATION = 900; // 15 minutos
-    private const REFRESH_TOKEN_DURATION = 604800; // 7 dias
+    private const ACCESS_TOKEN_DURATION = 900; // 15 minutes
+    private const REFRESH_TOKEN_DURATION = 43200; // 12 hours
 
-    public function signin(Request $request): void
+    public function register(Request $request): void
     {
         try {
             $data = $request->body();
 
-            // Validação dos campos obrigatórios
+            // Required fields validation
             if (empty($data->name) || empty($data->username) || empty($data->email) || empty($data->password)) {
                 RouterHelper::respond(['error' => 'Name, username, email and password are required'], 400);
                 return;
             }
 
-            // Validação de email
+            // Email validation
             if (!filter_var($data->email, FILTER_VALIDATE_EMAIL)) {
                 RouterHelper::respond(['error' => 'Invalid email format'], 400);
                 return;
             }
 
-            // Validação de senha (mínimo 8 caracteres)
+            // Password validation (minimum 8 characters)
             if (strlen($data->password) < 8) {
                 RouterHelper::respond(['error' => 'Password must be at least 8 characters long'], 400);
                 return;
             }
 
+            // Username validation (minimum 4 characters)
             if (strlen($data->username) < 4) {
                 RouterHelper::respond(['error' => 'Username must be at least 4 characters long'], 400);
                 return;
             }
 
-            // Verifica se o email já está em uso
+            // Check if email is already in use
             $user = new User();
             $existingUser = $user->getByEmail($data->email);
 
@@ -58,10 +59,10 @@ class AuthController
                 return;
             }
 
-            // Cria o hash da senha
+            // Create password hash
             $passwordHash = password_hash($data->password, PASSWORD_DEFAULT, ['cost' => 12]);
 
-            // Prepara os dados do usuário
+            // Prepare user data
             $userData = [
                 'name' => $data->name,
                 'username' => $data->username,
@@ -77,13 +78,13 @@ class AuthController
                 throw new Exception('Failed to create user');
             }
 
-            // Busca o usuário recém-criado
+            // Get the newly created user
             $user = $user->get($userId);
 
-            // Gera tokens para o novo usuário
+            // Generate tokens for the new user
             $tokens = $this->generateTokens($user);
 
-            // Armazena o refresh token
+            // Store the refresh token
             $refreshTokenData = [
                 'user_id' => $userId,
                 'token' => $tokens['refresh_token'],
@@ -92,9 +93,13 @@ class AuthController
                 'created_at' => date('Y-m-d H:i:s')
             ];
 
-            $user->insert('refresh_tokens', $refreshTokenData);
+            $tokenData = (new RefreshTokens())->create($refreshTokenData);
 
-            // Responde com os tokens e dados básicos do usuário
+            if(!$tokenData) {
+                RouterHelper::respond(['error' => 'Token cannot be created'], 500);
+            }
+
+            // Respond with tokens and basic user data
             RouterHelper::respond([
                 'message' => 'User created successfully',
                 'user' => [
@@ -107,7 +112,7 @@ class AuthController
                 'expires_in' => self::ACCESS_TOKEN_DURATION
             ], 201);
         } catch (Exception $e) {
-            // Log do erro
+            // Error log
             error_log('Error creating user: ' . $e->getMessage());
 
             RouterHelper::respond([
@@ -118,7 +123,7 @@ class AuthController
     }
 
     /**
-     * Gera novos tokens de acesso e refresh
+     * Generates new access and refresh tokens
      */
     private function generateTokens(array $user): array
     {
@@ -158,27 +163,30 @@ class AuthController
             return;
         }
 
-        // Busca o usuário pelo email
-        global $db;
-        $user = $db->get('users', '*', ['email' => $data->email]);
+        $user = new User();
+        $userData = $user->getByEmail($data->email);
 
-        if (!$user || !password_verify($data->password, $user['password'])) {
+        if (!$userData || !password_verify($data->password, $userData['password'])) {
             RouterHelper::respond(['error' => 'Invalid credentials'], 401);
             return;
         }
 
-        $tokens = $this->generateTokens($user);
+        $tokens = $this->generateTokens($userData);
 
-        // Armazena o refresh token
+        // Store the refresh token
         $refreshTokenData = [
-            'user_id' => $user['id'],
+            'user_id' => $userData['id'],
             'token' => $tokens['refresh_token'],
             'expires_at' => $tokens['refresh_expires_at'],
             'revoked' => 0,
             'created_at' => date('Y-m-d H:i:s')
         ];
 
-        $db->insert('refresh_tokens', $refreshTokenData);
+        $tokenData = (new RefreshTokens())->create($refreshTokenData);
+
+        if(!$tokenData) {
+            RouterHelper::respond(['error' => 'Token cannot be created'], 500);
+        }
 
         RouterHelper::respond([
             'access_token' => $tokens['access_token'],
@@ -188,32 +196,29 @@ class AuthController
     }
 
     /**
-     * Renovação de token usando refresh token
+     * Token renewal using refresh token
      */
     public function refresh(Request $request): void
     {
         $data = $request->body();
 
-        if (!isset($data['refresh_token'])) {
+        if (!isset($data->refresh_token)) {
             RouterHelper::respond(['error' => 'Refresh token is required'], 400);
             return;
         }
 
         try {
-            $decoded = JWT::decode($data['refresh_token'], new \Firebase\JWT\Key($_ENV['JWT_REFRESH_SECRET'], 'HS256'));
+            $decoded = JWT::decode($data->refresh_token, new \Firebase\JWT\Key($_ENV['JWT_REFRESH_SECRET'], 'HS256'));
 
-            global $db;
-            $refreshToken = $db->get('refresh_tokens', '*', [
-                'token' => $data['refresh_token'],
-                'revoked' => 0
-            ]);
+            $refreshToken = new RefreshTokens();
+            $refreshTokenData = $refreshToken->getActive($data->refresh_token);
 
-            if (!$refreshToken || strtotime($refreshToken['expires_at']) < time()) {
+            if (!$refreshTokenData || strtotime($refreshTokenData['expires_at']) < time()) {
                 RouterHelper::respond(['error' => 'Invalid refresh token'], 401);
                 return;
             }
 
-            $user = $db->get('users', '*', ['id' => $decoded->user_id]);
+            $user = (new User())->get($decoded->user_id);
 
             if (!$user) {
                 RouterHelper::respond(['error' => 'User not found'], 404);
@@ -222,14 +227,11 @@ class AuthController
 
             $tokens = $this->generateTokens($user);
 
-            // Atualiza o refresh token
-            $db->update(
-                'refresh_tokens',
-                [
-                    'token' => $tokens['refresh_token'],
-                    'expires_at' => $tokens['refresh_expires_at']
-                ],
-                ['id' => $refreshToken['id']]
+            // Update the refresh token
+            $refreshToken->update(
+            $refreshTokenData['id'],
+            ['token' => $tokens['refresh_token'],
+                   'expires_at' => $tokens['refresh_expires_at']]
             );
 
             RouterHelper::respond([
@@ -243,7 +245,7 @@ class AuthController
     }
 
     /**
-     * Logout do usuário
+     * User logout
      */
     public function logout(Request $request): void
     {
@@ -270,7 +272,7 @@ class AuthController
     }
 
     /**
-     * Adiciona token à blacklist
+     * Add token to blacklist
      */
     private function addToBlacklist(string $token): void
     {
@@ -284,7 +286,7 @@ class AuthController
                 'created_at' => date('Y-m-d H:i:s')
             ]);
         } catch (Exception $e) {
-            // Token inválido, ignora
+            // Invalid token, ignore
         }
     }
 }

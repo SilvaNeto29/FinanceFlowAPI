@@ -7,11 +7,16 @@ use App\Models\User;
 
 class UserController extends Controller
 {
+    private User $user;
+
+    public function __construct()
+    {
+        $this->user = new User();
+    }
 
     public function getAll(): void
     {
-        $user = new User;
-        $data = $user->getAll();
+        $data = $this->user->getAll();
 
         if (!$data) {
             $this->jsonResponse(['error' => 'Records not found', 'data' => []], 204);
@@ -22,10 +27,7 @@ class UserController extends Controller
 
     public function getById(int $id): void
     {
-
-        $id = (int) $id;
-        $user = new User();
-        $userData = $user->get($id);
+        $userData = $this->user->get($id);
 
         if (!$userData) {
             $this->jsonResponse(['error' => 'User not found', 'data' => []], 404);
@@ -36,10 +38,7 @@ class UserController extends Controller
 
     public function getByDoc(string $doc): void
     {
-
-        $doc = (string) $doc;
-        $user = new User();
-        $userData = $user->getByDoc($doc);
+        $userData = $this->user->getByDoc($doc);
 
         if (!$userData) {
             $this->jsonResponse(['error' => 'User not found', 'data' => []], 404);
@@ -47,6 +46,4 @@ class UserController extends Controller
 
         $this->jsonResponse(['data' => $userData], 200);
     }
-
-    
 }

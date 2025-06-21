@@ -9,23 +9,23 @@ use Medoo\Medoo;
 class User extends Model
 {
     protected Medoo $db;
+    protected static string $table = "users";
 
     public function __construct()
     {
         $this->db = Database::connect();
-        static::$table = "users";
     }
 
     public function get(int $id)
     {
         return $this->db->get(
             static::$table,
-            ['name', 'email'],
+            ['id','name', 'email'],
             ['id' => $id]
         );
     }
 
-    public function getByusername(string $username)
+    public function getByUsername(string $username)
     {
         return $this->db->get(
             static::$table,
@@ -37,9 +37,18 @@ class User extends Model
     public function getByEmail(string $email)
     {
         return $this->db->get(
-            'users',
-            ['name', 'email'],
+            static::$table,
+            ['id','email', 'password'],
             ['email' => $email]
+        );
+    }
+
+    public function getByDoc(string $doc)
+    {
+        return $this->db->get(
+            static::$table,
+            ['name', 'doc'],
+            ['doc' => $doc]
         );
     }
 

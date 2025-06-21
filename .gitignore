@@ -5,3 +5,5 @@ afazer.md
 vendor
 .idea
 database/database.sqlite
+database/database.sqlite-wal
+database/database.sqlite-shm
