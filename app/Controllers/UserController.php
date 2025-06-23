@@ -1,33 +1,49 @@
 <?php
 
 namespace App\Controllers;
+
 use App\Core\Controller;
 use App\Models\User;
 
-class UserController extends Controller {
+class UserController extends Controller
+{
+    private User $user;
 
-    public function getAll(): void 
+    public function __construct()
     {
-        $user = new User;
-        $data = $user->getAll();
-
-        if (!$data) {
-            $this->jsonResponse (['error' => 'Records not found'], 204);
-        }
-        
-        $this->jsonResponse(['data' => $data],200);
+        $this->user = new User();
     }
 
-    public function getById(int $id): void {
+    public function getAll(): void
+    {
+        $data = $this->user->getAll();
 
-        $id = (int) $id;
-        $user = new User();
-        $userData = $user->get($id);
-        
-        if (!$userData) {
-            $this->jsonResponse(['error' => 'User not found', 'data'=> []],404);
+        if (!$data) {
+            $this->jsonResponse(['error' => 'Records not found', 'data' => []], 204);
         }
 
-        $this->jsonResponse(['data'=> $userData],200);
+        $this->jsonResponse(['data' => $data], 200);
+    }
+
+    public function getById(int $id): void
+    {
+        $userData = $this->user->get($id);
+
+        if (!$userData) {
+            $this->jsonResponse(['error' => 'User not found', 'data' => []], 404);
+        }
+
+        $this->jsonResponse(['data' => $userData], 200);
+    }
+
+    public function getByDoc(string $doc): void
+    {
+        $userData = $this->user->getByDoc($doc);
+
+        if (!$userData) {
+            $this->jsonResponse(['error' => 'User not found', 'data' => []], 404);
+        }
+
+        $this->jsonResponse(['data' => $userData], 200);
     }
 }

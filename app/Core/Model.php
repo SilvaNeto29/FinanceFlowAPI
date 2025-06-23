@@ -56,9 +56,25 @@ abstract class Model
     /**
      * @return boolean
     */
+
+    public function updateWhere(array $data, array $where): bool
+    {
+        $this->db->update(static::$table, $data, $where);
+        return $this->db->error === [null, null, null];
+    }
+    /**
+     * @return boolean
+    */
+
     public function delete(int $id): bool
     {
         $this->db->delete(static::$table, ['id' => $id]);
+        return $this->db->error === [null, null, null];
+    }
+
+    public function deleteWhere(array $where): bool
+    {
+        $this->db->delete(static::$table, $where);
         return $this->db->error === [null, null, null];
     }
 }
