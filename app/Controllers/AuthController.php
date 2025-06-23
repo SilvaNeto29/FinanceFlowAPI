@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Core\Request;
 use App\Models\RefreshTokens;
+use App\Models\TokenBlacklist;
 use Firebase\JWT\JWT;
 use App\Helpers\RouterHelper;
 use App\Models\User;
@@ -256,14 +257,13 @@ class AuthController
         }
 
         $token = trim(str_replace('Bearer', '', $auth));
-        $refreshToken = $request->body()['refresh_token'] ?? null;
+        $refreshTokenData = $request->body()->refresh_token ?? null;
 
-        if ($refreshToken) {
-            global $db;
-            $db->update(
-                'refresh_tokens',
+        if ($refreshTokenData) {
+            $refreshToken = new RefreshTokens();
+            $refreshToken->updateWhere(
                 ['revoked' => 1],
-                ['token' => $refreshToken]
+                ['token' => $refreshTokenData]
             );
         }
 
@@ -279,8 +279,7 @@ class AuthController
         try {
             $decoded = JWT::decode($token, new \Firebase\JWT\Key($_ENV['JWT_SECRET'], 'HS256'));
 
-            global $db;
-            $db->insert('token_blacklist', [
+            (new TokenBlacklist())->create([
                 'token' => $token,
                 'expires_at' => date('Y-m-d H:i:s', $decoded->exp),
                 'created_at' => date('Y-m-d H:i:s')
@@ -288,5 +287,9 @@ class AuthController
         } catch (Exception $e) {
             // Invalid token, ignore
         }
+    }
+
+    public function me(Request $request): void{
+
     }
 }

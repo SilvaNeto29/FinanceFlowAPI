@@ -5,7 +5,7 @@ namespace App\Middlewares;
 use App\Core\Request;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
-use App\Models\User;
+use App\Models\TokenBlacklist;
 
 class AuthMiddleware
 {
@@ -44,8 +44,6 @@ class AuthMiddleware
 
     private function isTokenBlacklisted(string $token): bool
     {
-        // Implementar consulta à tabela token_blacklist
-        // Retorna true se o token estiver na blacklist
-        return false;
+        return (new TokenBlacklist())->isTokenActive($token);
     }
 }
