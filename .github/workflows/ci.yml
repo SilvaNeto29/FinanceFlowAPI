@@ -26,25 +26,26 @@ jobs:
       run: composer install
 
     - name: Create SQLite database file
-      run:
+      run: |
         mkdir -p database
         touch database/database.sqlite
 
-    - name: Create .env from secrets
-      run:
-        echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
-        echo "JWT_REFRESH_SECRET=${{ secrets.JWT_REFRESH_SECRET }}" >> .env
-        echo "DB_DRIVER=pdo_sqlite" >> .env
-        echo "DB_TYPE=sqlite" >> .env
-        echo "DB_PATH=${{ secrets.DB_PATH }}" >> .env
-        echo "DB_HOST=" >> .env
-        echo "DB_PORT=" >> .env
-        echo "DB_NAME=${{ secrets.DB_NAME }}" >> .env
-        echo "DB_USER=${{ secrets.DB_USER }}" >> .env
-        echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
+    - name: Copy .env.example to .env
+      run: cp .env.example .env
 
-    - name: Debug .env
-      run: cat .env    
+    - name: Overwrite secrets in .env
+      run: |
+        sed -i "s|^JWT_SECRET=.*|JWT_SECRET=${{ secrets.JWT_SECRET }}|" .env
+        sed -i "s|^JWT_REFRESH_SECRET=.*|JWT_REFRESH_SECRET=${{ secrets.JWT_REFRESH_SECRET }}|" .env
+        sed -i "s|^DB_DRIVER=.*|DB_DRIVER=${{ secrets.DB_DRIVER }}|" .env
+        sed -i "s|^DB_TYPE=.*|DB_TYPE=${{ secrets.DB_TYPE }}|" .env
+        sed -i "s|^DB_PATH=.*|DB_PATH=${{ secrets.DB_PATH }}|" .env
+        sed -i "s|^DB_HOST=.*|DB_HOST=${{ secrets.DB_HOST }}|" .env
+        sed -i "s|^DB_PORT=.*|DB_PORT=${{ secrets.DB_PORT }}|" .env
+        sed -i "s|^DB_NAME=.*|DB_NAME=${{ secrets.DB_NAME }}|" .env
+        sed -i "s|^DB_USER=.*|DB_USER=${{ secrets.DB_USER }}|" .env
+        sed -i "s|^DB_PASSWORD=.*|DB_PASSWORD=${{ secrets.DB_PASSWORD }}|" .env
+        sed -i "s|^APP_URL=.*|APP_URL=${{ secrets.APP_URL }}|" .env
 
     - name: Run Doctrine migrations
       run: vendor/bin/doctrine-migrations migrate --no-interaction
