@@ -45,7 +45,6 @@ jobs:
         sed -i "s|^DB_NAME=.*|DB_NAME=${{ secrets.DB_NAME }}|" .env
         sed -i "s|^DB_USER=.*|DB_USER=${{ secrets.DB_USER }}|" .env
         sed -i "s|^DB_PASSWORD=.*|DB_PASSWORD=${{ secrets.DB_PASSWORD }}|" .env
-        sed -i "s|^APP_URL=.*|APP_URL=${{ secrets.APP_URL }}|" .env
 
     - name: Run Doctrine migrations
       run: vendor/bin/doctrine-migrations migrate --no-interaction
