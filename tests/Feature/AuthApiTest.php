@@ -2,7 +2,9 @@
 
 use PHPUnit\Framework\TestCase;
 use GuzzleHttp\Client;
-
+/**
+ * @covers \App\Controllers\AuthController
+ */
 class AuthApiTest extends TestCase
 {
     private Client $client;
@@ -25,7 +27,9 @@ class AuthApiTest extends TestCase
             'http_errors' => false,
         ]);
     }
-
+    /**
+     * @covers \App\Controllers\AuthController::register
+     */
     public function testRegister()
     {
         $response = $this->client->post('/api/v1/auth/register', [
