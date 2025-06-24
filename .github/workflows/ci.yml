@@ -3,12 +3,10 @@ name: CI
 on:
   push:
     branches:
-      - main
       - dev
   pull_request:
     branches:
       - main
-      - dev
 
 jobs:
   test:
@@ -25,7 +23,7 @@ jobs:
         extensions: mbstring, pdo_sqlite
 
     - name: Install Composer dependencies
-      run: composer install --no-progress --no-suggest --prefer-dist
+      run: composer install
 
     - name: Create SQLite database file
       run:
