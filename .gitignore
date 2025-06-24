@@ -7,3 +7,4 @@ vendor
 database/database.sqlite
 database/database.sqlite-wal
 database/database.sqlite-shm
+.phpunit.cache/test-results

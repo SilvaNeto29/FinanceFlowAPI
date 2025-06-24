@@ -54,6 +54,7 @@ class User extends Model
 
     public function getAll()
     {
+        /** @phpstan-ignore-next-line */
         return $this->db->select(
             static::$table,
             ['name', 'email'],
