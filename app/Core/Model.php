@@ -31,11 +31,12 @@ abstract class Model
         return $this->db->get(static::$table, '*', ['id' => $id]) ?: null;
     }
     /**
-     * @return array<string,mixed>|null
-    */
+     * @return array<int, array<string, mixed>>
+     */
     public function all(): ?array
     {
-        return $this->db->select(static::$table, '*');
+        /** @phpstan-ignore-next-line */
+        return $this->db->select(static::$table, ['*']);
     }
     /**
      * @return int
@@ -43,7 +44,7 @@ abstract class Model
     public function create(array $data): int
     {
         $this->db->insert(static::$table, $data);
-        return $this->db->id() !== 0;
+        return (int) $this->db->id();
     }
     /**
      * @return boolean
@@ -51,16 +52,16 @@ abstract class Model
     public function update(int $id, array $data): bool
     {
         $this->db->update(static::$table, $data, ['id' => $id]);
-        return $this->db->error === [null, null, null];
+        return $this->db->error === null;
     }
     /**
      * @return boolean
     */
-
     public function updateWhere(array $data, array $where): bool
     {
         $this->db->update(static::$table, $data, $where);
-        return $this->db->error === [null, null, null];
+        $error = $this->db->error;
+        return $this->db->error === null;
     }
     /**
      * @return boolean
