@@ -30,6 +30,19 @@ jobs:
         mkdir -p database
         touch database/database.sqlite
 
+    - name: Create .env from secrets
+      run:
+        echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
+        echo "JWT_REFRESH_SECRET=${{ secrets.JWT_REFRESH_SECRET }}" >> .env
+        echo "DB_DRIVER=pdo_sqlite" >> .env
+        echo "DB_TYPE=sqlite" >> .env
+        echo "DB_PATH=${{ secrets.DB_PATH }}" >> .env
+        echo "DB_HOST=" >> .env
+        echo "DB_PORT=" >> .env
+        echo "DB_NAME=${{ secrets.DB_NAME }}" >> .env
+        echo "DB_USER=${{ secrets.DB_USER }}" >> .env
+        echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
+
     - name: Run Doctrine migrations
       run: vendor/bin/doctrine-migrations migrate --no-interaction
 
