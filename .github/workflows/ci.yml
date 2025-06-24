@@ -46,6 +46,9 @@ jobs:
         sed -i "s|^DB_USER=.*|DB_USER=${{ secrets.DB_USER }}|" .env
         sed -i "s|^DB_PASSWORD=.*|DB_PASSWORD=${{ secrets.DB_PASSWORD }}|" .env
 
+    - name: Start PHP built-in server
+      run: php -S localhost:8000 -t public > /dev/null 2>&1 &
+
     - name: Run Doctrine migrations
       run: vendor/bin/doctrine-migrations migrate --no-interaction
 

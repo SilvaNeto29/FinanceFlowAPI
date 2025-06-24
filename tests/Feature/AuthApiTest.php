@@ -23,7 +23,7 @@ class AuthApiTest extends TestCase
     protected function setUp(): void
     {
         $this->client = new Client([
-            'base_uri' => 'http://localhost',
+            'base_uri' => 'http://localhost:8000',
             'http_errors' => false,
         ]);
     }
