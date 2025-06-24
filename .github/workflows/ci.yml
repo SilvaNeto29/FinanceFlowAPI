@@ -43,6 +43,9 @@ jobs:
         echo "DB_USER=${{ secrets.DB_USER }}" >> .env
         echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
 
+    - name: Debug .env
+      run: cat .env    
+
     - name: Run Doctrine migrations
       run: vendor/bin/doctrine-migrations migrate --no-interaction
 
