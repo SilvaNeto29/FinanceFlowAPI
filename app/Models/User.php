@@ -24,7 +24,6 @@ class User extends Model
             ['id' => $id]
         );
     }
-
     public function getByUsername(string $username)
     {
         return $this->db->get(

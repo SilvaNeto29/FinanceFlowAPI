@@ -3,18 +3,18 @@
 namespace App\Controllers;
 
 use App\Core\Request;
+use App\Core\Controller;
 use App\Models\RefreshTokens;
 use App\Models\TokenBlacklist;
+use App\Domain\Constants\AuthConstant;
 use Firebase\JWT\JWT;
 use App\Helpers\RouterHelper;
 use App\Models\User;
+use App\Services\AuthService;
 use Exception;
 
-class AuthController
+class AuthController extends Controller
 {
-    private const ACCESS_TOKEN_DURATION = 900; // 15 minutes
-    private const REFRESH_TOKEN_DURATION = 43200; // 12 hours
-
     public function register(Request $request): void
     {
         try {
@@ -43,7 +43,6 @@ class AuthController
                 RouterHelper::respond(['error' => 'Username must be at least 4 characters long'], 400);
                 return;
             }
-
             // Check if email is already in use
             $user = new User();
             $existingUser = $user->getByEmail($data->email);
@@ -110,7 +109,7 @@ class AuthController
                 ],
                 'access_token' => $tokens['access_token'],
                 'refresh_token' => $tokens['refresh_token'],
-                'expires_in' => self::ACCESS_TOKEN_DURATION
+                'expires_in' => AuthConstant::ACCESS_TOKEN_DURATION
             ], 201);
         } catch (Exception $e) {
             // Error log
@@ -129,8 +128,8 @@ class AuthController
     private function generateTokens(array $user): array
     {
         $now = time();
-        $accessExpires = $now + self::ACCESS_TOKEN_DURATION;
-        $refreshExpires = $now + self::REFRESH_TOKEN_DURATION;
+        $accessExpires = $now + AuthConstant::ACCESS_TOKEN_DURATION;
+        $refreshExpires = $now + AuthConstant::REFRESH_TOKEN_DURATION;
 
         $accessPayload = [
             'user_id' => $user['id'],
@@ -192,7 +191,7 @@ class AuthController
         RouterHelper::respond([
             'access_token' => $tokens['access_token'],
             'refresh_token' => $tokens['refresh_token'],
-            'expires_in' => self::ACCESS_TOKEN_DURATION
+            'expires_in' => AuthConstant::ACCESS_TOKEN_DURATION
         ], 200);
     }
 
@@ -238,7 +237,7 @@ class AuthController
             RouterHelper::respond([
                 'access_token' => $tokens['access_token'],
                 'refresh_token' => $tokens['refresh_token'],
-                'expires_in' => self::ACCESS_TOKEN_DURATION
+                'expires_in' => AuthConstant::ACCESS_TOKEN_DURATION
             ], 200);
         } catch (Exception $e) {
             RouterHelper::respond(['error' => 'Invalid refresh token'], 401);
@@ -289,7 +288,18 @@ class AuthController
         }
     }
 
-    public function me(Request $request): void{
+    public function me(Request $request): ?string {
+        
+        $data = $request->header('Authorization');
+        $userId = (new AuthService)->getUserIdFromToken($data);
+
+        if (!$userId){
+            RouterHelper::respond(["error" => "Server could not proceed"], 500);
+        }
+
+        $userData = (new User)->get($userId);
+
+        return $userData ? $this->jsonResponse(["data" => $userData], 200) : RouterHelper::respond(["error" => "User not found"], 404);
 
     }
 }

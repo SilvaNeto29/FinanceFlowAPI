@@ -29,6 +29,11 @@
       "docker-build": "docker build -t financeflow-api .",
       "docker-run": "docker run -d -p 8000:80 --name financeflow-container financeflow-api",
       "generate_migration": "./vendor/bin/doctrine-migrations generate",
-      "migrate": "./vendor/bin/doctrine-migrations migrate"
+      "migrate": "./vendor/bin/doctrine-migrations migrate",
+      "test": "vendor/bin/phpunit --colors=always",
+      "check": [
+        "@phpstan",
+        "@test"
+      ]
     }
 }
