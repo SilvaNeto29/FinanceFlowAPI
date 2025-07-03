@@ -61,7 +61,8 @@ final class Version20250426150722 extends AbstractMigration
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 token VARCHAR(512) NOT NULL,
                 expires_at DATETIME NOT NULL,
-                created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                updated_at DATETIME 
             )
         ');
 

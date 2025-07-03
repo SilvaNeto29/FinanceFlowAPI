@@ -34,6 +34,9 @@ class AuthMiddleware
                 echo json_encode(['error' => 'Invalid Token']);
                 return false;
             }
+
+            //(new TokenBlacklist())->renewToken($token);
+
             return true;
         } catch (\Exception $e) {
             http_response_code(401);
