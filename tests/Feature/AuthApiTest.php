@@ -73,6 +73,7 @@ class AuthApiTest extends TestCase
 
     public function testRefresh()
     {
+
         $response = $this->client->post('/api/v1/auth/refresh', [
             'json' => [
                 'refresh_token' => self::$refreshToken,

@@ -13,7 +13,7 @@ $router->get('/api/v1/ping', fn () => RouterHelper::respond(['pong' => true], 20
 $router->post('/api/v1/auth/login', [AuthController::class, 'login']);
 $router->post('/api/v1/auth/register', [AuthController::class, 'register']);
 $router->post('/api/v1/auth/logout', [AuthController::class, 'logout'], AuthMiddleware::class);
-$router->post('/api/v1/auth/refresh', [AuthController::class, 'refresh'], AuthMiddleware::class);
+$router->post('/api/v1/auth/refresh', [AuthController::class, 'refresh']);
 $router->get('/api/v1/auth/me', [AuthController::class, 'me'], AuthMiddleware::class);
 //todo Reset password
 
