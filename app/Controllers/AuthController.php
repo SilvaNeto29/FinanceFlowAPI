@@ -299,7 +299,7 @@ class AuthController extends Controller
 
         $userData = (new User)->get($userId);
 
-        return $userData ? $this->jsonResponse(["data" => $userData], 200) : RouterHelper::respond(["error" => "User not found"], 404);
+        return $userData ? $this->jsonResponse(["data" => $userData], 200) : $this->jsonResponse(["error" => "User not found"], 404);
 
     }
 }

@@ -11,9 +11,9 @@ class RouterHelper
         exit;
     }
 
-    public static function isInt($i){
+    public static function isInt($i, array $message){
         if (!is_numeric($i) || (int) $i <= 0) {
-            static::respond(['error'=> 'Unformated ID'],400);
+            static::respond($message,400);
         }
     }
 

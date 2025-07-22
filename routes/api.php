@@ -17,17 +17,31 @@ $router->post('/api/v1/auth/refresh', [AuthController::class, 'refresh']);
 $router->get('/api/v1/auth/me', [AuthController::class, 'me'], AuthMiddleware::class);
 //todo Reset password
 
-//Admin//////
-$router->get('/api/v1/users', function (): void {(new UserController())->getAll();});
-$router->get('/api/v1/users/{id}', function ($id): void {RouterHelper::isInt($id);(new UserController())->getById($id);});
-$router->get('/api/v1/users/{doc}', function ($doc): void {RouterHelper::isString($doc);(new UserController())->getByDoc($doc);});
+//Admin
+$router->get('/api/v1/users', function (): void {
+    (new UserController())->getAll();
+});
+$router->get('/api/v1/users/{id}', function ($id): void {
+    RouterHelper::isInt($id, ['error' => 'Unformated id']) ;
+    (new UserController())->getById($id);
+});
+$router->get('/api/v1/users/{doc}', function ($doc): void {
+    RouterHelper::isString($doc);
+    (new UserController())->getByDoc($doc);
+});
 //$router->put(); User
 //$router->delete(); User
 //todo roles
 /////////////
 
 //Accounts
-$router->get('/api/v1/accounts',[AccountsController::class, 'get']);
+$router->get('/api/v1/accounts', [AccountsController::class, 'all']);
+$router->get('/api/v1/accounts/{id}', function ($id){
+    (new AccountsController())->get($id);
+});
+$router->post('/api/v1/accounts',[AccountsController::class, 'create']);
+$router->put('/api/v1/accounts',[AccountsController::class, 'edit']);
+$router->delete('/api/v1/accounts',[AccountsController::class, 'delete']);
 
 
 // getCards by user

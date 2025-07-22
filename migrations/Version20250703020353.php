@@ -27,7 +27,7 @@ final class Version20250703020353 extends AbstractMigration
             CREATE TABLE accounts (
                 id             INTEGER PRIMARY KEY AUTOINCREMENT,
                 user_id        INTEGER NOT NULL,
-                bank_name      TEXT    NOT NULL,
+                bank_code      TEXT    NOT NULL,
                 agency_number  TEXT    NOT NULL,
                 account_number TEXT    NOT NULL,
                 type           TEXT    NOT NULL DEFAULT 'checking', 

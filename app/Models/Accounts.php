@@ -16,5 +16,10 @@ class Accounts extends Model
         $this->db = Database::connect();
     }
 
+    public function get ($id = null){
+        return $id ? 
+            $this->db->select(self::TABLE, '*', ['id' => $id]) :
+            $this->db->select(self::TABLE, '*');
+    }
 
 }
