@@ -19,7 +19,9 @@ class AccountsController extends Controller {
         try {
 
             $data = $this->service->getAccounts($id);
-            return $this->jsonResponse(['data' => $data]);
+            return $data ? 
+                $this->jsonResponse(['data' => $data]) :
+                $this->jsonResponse(['error' => 'Account not found'], 404);
 
         } catch (\Throwable $th) {
 
@@ -40,7 +42,7 @@ class AccountsController extends Controller {
 
         } catch (\Throwable $th) {
 
-            LogHelper::error('AccountsController@get failed', [
+            LogHelper::error('AccountsController@all failed', [
                 'message' => $th->getMessage(),
                 'trace'   => $th->getTraceAsString(),
             ]);
@@ -48,16 +50,61 @@ class AccountsController extends Controller {
         }
     }
 
-    public function create(Request $request) : string {
-        
+    public function create(Request $request): ?string
+    {
         try {
-            
-            $data = $this->service->create();
+ 
+            $data = $this->service->create($request->body());
+            return $data > 0 ? 
+                $this->jsonResponse(['message' => 'Account created'], 201) :
+                $this->jsonResponse(['error' => 'Internal Error'], 500);
 
         } catch (\Throwable $th) {
-            //throw $th;
+            
+            LogHelper::error('AccountsController@create failed', [
+                'message' => $th->getMessage(),
+                'trace'   => $th->getTraceAsString(),
+            ]);
+            return $this->jsonResponse(['error' => 'Internal Error'], 500);
         }
+    }
 
-        return '';
+    public function edit(Request $request): ?string
+    {
+        try {
+
+            $data = $this->service->edit($request->body());
+
+            return $data ? 
+                $this->jsonResponse(['message' => 'Account updated']) :
+                $this->jsonResponse(['error' => 'Internal Error'], 500);
+
+        } catch (\Throwable $th) {
+
+            LogHelper::error('AccountsController@edit failed', [
+                'message' => $th->getMessage(),
+                'trace'   => $th->getTraceAsString(),
+            ]);
+            return $this->jsonResponse(['error' => 'Internal Error'], 500);
+        }
+    }
+
+    public function delete(Request $request): ?string
+    {
+        try {
+
+            $data = $this->service->delete($request->body());
+            return $data ? 
+                $this->jsonResponse(['message' => 'Account deleted']) :
+                $this->jsonResponse(['error' => 'Internal Error'], 500);
+
+        } catch (\Throwable $th) {
+
+            LogHelper::error('AccountsController@delete failed', [
+                'message' => $th->getMessage(),
+                'trace'   => $th->getTraceAsString(),
+            ]);
+            return $this->jsonResponse(['error' => 'Internal Error'], 500);
+        }
     }
 }

@@ -9,17 +9,18 @@ use Medoo\Medoo;
 class Accounts extends Model
 {
     protected Medoo $db;
-    private const TABLE = 'accounts';
+    protected static string $table = "accounts";
 
     public function __construct()
     {
         $this->db = Database::connect();
+        
     }
 
     public function get ($id = null){
         return $id ? 
-            $this->db->select(self::TABLE, '*', ['id' => $id]) :
-            $this->db->select(self::TABLE, '*');
+            $this->db->select(self::$table, '*', ['id' => $id]) :
+            $this->db->select(self::$table, '*');
     }
 
 }

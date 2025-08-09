@@ -5,6 +5,7 @@ use App\Middlewares\AuthMiddleware;
 use App\Controllers\UserController;
 use App\Controllers\AuthController;
 use App\Controllers\AccountsController;
+use App\Core\Request;
 
 //Test
 $router->get('/api/v1/ping', fn () => RouterHelper::respond(['pong' => true], 200));
@@ -16,6 +17,7 @@ $router->post('/api/v1/auth/logout', [AuthController::class, 'logout'], AuthMidd
 $router->post('/api/v1/auth/refresh', [AuthController::class, 'refresh']);
 $router->get('/api/v1/auth/me', [AuthController::class, 'me'], AuthMiddleware::class);
 //todo Reset password
+//Todo Email
 
 //Admin
 $router->get('/api/v1/users', function (): void {
@@ -25,12 +27,16 @@ $router->get('/api/v1/users/{id}', function ($id): void {
     RouterHelper::isInt($id, ['error' => 'Unformated id']) ;
     (new UserController())->getById($id);
 });
+$router->patch('/api/v1/users/{id}', function ($id): void {
+    RouterHelper::isInt($id, ['error' => 'Unformated id']) ;
+    (new UserController())->update($id, new Request());
+});
 $router->get('/api/v1/users/{doc}', function ($doc): void {
     RouterHelper::isString($doc);
     (new UserController())->getByDoc($doc);
 });
-//$router->put(); User
-//$router->delete(); User
+//Todo $router->put(); User
+//Todo $router->delete(); User
 //todo roles
 /////////////
 
@@ -39,7 +45,7 @@ $router->get('/api/v1/accounts', [AccountsController::class, 'all']);
 $router->get('/api/v1/accounts/{id}', function ($id){
     (new AccountsController())->get($id);
 });
-$router->post('/api/v1/accounts',[AccountsController::class, 'create']);
+$router->post('/api/v1/accounts',[AccountsController::class, 'create']);//TodoAuthMiddleware::class
 $router->put('/api/v1/accounts',[AccountsController::class, 'edit']);
 $router->delete('/api/v1/accounts',[AccountsController::class, 'delete']);
 

@@ -34,6 +34,11 @@ class Router
         $this->routes['DELETE'][$path] = compact('callback', 'middleware');
     }
 
+    public function patch(string $path, $callback, $middleware = null)
+    {
+        $this->routes['PATCH'][$path] = compact('callback', 'middleware');
+    }
+
     public function resolve()
     {
         $method = $this->request->method();
@@ -67,6 +72,7 @@ class Router
             // Executa o callback
             $callback = $routeData['callback'];
 
+            $result = null;
             if (is_array($callback) && count($callback) === 2) {
                 // Callback no formato [Controller::class, 'method']
                 [$controllerClass, $method] = $callback;
@@ -75,12 +81,15 @@ class Router
                 // Adiciona o Request como primeiro parâmetro
                 array_unshift($matches, $this->request);
 
-                call_user_func_array([$controller, $method], $matches);
+                $result = call_user_func_array([$controller, $method], $matches);
             } else {
                 // Callback direto (função/closure)
-                call_user_func_array($callback, $matches);
+                $result = call_user_func_array($callback, $matches);
             }
 
+            if ($result !== null) {
+                echo $result;
+            }
             return;
         }
 

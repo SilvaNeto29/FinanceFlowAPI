@@ -1,6 +1,8 @@
 <?php
 
-use PHPUnit\Framework\TestCase;
+namespace Tests\Feature;
+
+use Tests\TestCase;
 use GuzzleHttp\Client;
 /**
  * @covers \App\Controllers\AuthController

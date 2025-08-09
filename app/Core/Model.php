@@ -67,15 +67,15 @@ abstract class Model
      * @return boolean
     */
 
-    public function delete(int $id): bool
+    public function delete(int $id): array
     {
-        $this->db->delete(static::$table, ['id' => $id]);
-        return $this->db->error === [null, null, null];
+        $rows = $this->db->delete(static::$table, ['id' => $id]);
+        return ['rows' => $rows, 'success' => $this->db->error === [null, null, null]];
     }
 
-    public function deleteWhere(array $where): bool
+    public function deleteWhere(array $where): array
     {
-        $this->db->delete(static::$table, $where);
-        return $this->db->error === [null, null, null];
+        $rows = $this->db->delete(static::$table, $where);
+        return ['rows' => $rows, 'success' => $this->db->error === [null, null, null]];
     }
 }

@@ -8,7 +8,6 @@ class RouterHelper
     {
         http_response_code($statusCode);
         echo json_encode($message);
-        exit;
     }
 
     public static function isInt($i, array $message){
