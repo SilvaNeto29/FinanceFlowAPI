@@ -45,9 +45,10 @@ class UserController extends Controller
 
     public function update(int $id, $request): string
     {
+        //Todo melhorar essas validações, inclusive de email, incluir verificação com disparo de email
         $data = $request->body();
-        if (empty($data->name) || empty($data->email)) {
-            return $this->jsonResponse(['error' => 'Name and email are required'], 400);
+        if (empty($data->name) || empty($data->email) || empty($data->username)) {
+            return $this->jsonResponse(['error' => 'Name, email and username are required'], 400);
         }
         $userData = $this->service->getUserById($id);
         if (!$userData) {
@@ -55,22 +56,28 @@ class UserController extends Controller
         }
         $updated = $this->service->updateUser($id, [
             'name' => $data->name,
-            'email' => $data->email
+            'email' => $data->email,
+            'username' => $data->username
         ]);
         if (!$updated) {
             return $this->jsonResponse(['error' => 'Failed to update user', 'data' => []], 500);
         }
         return $this->jsonResponse(['message' => 'User updated successfully'], 200);
     }
-    
-    public function delete(int $id): string
+
+    public function delete(int $id, $request): string
     {
+        $data = $request->body();
+        if (empty($data->email)) {
+            return $this->jsonResponse(['error' => 'Email is required'], 400);
+        }
+
         $userData = $this->service->getUserById($id);
         if (!$userData) {
             return $this->jsonResponse(['error' => 'User not found', 'data' => []], 404);
         }
-        $deleted = $this->service->deleteUser($id);
-        if (!$deleted) {
+        $deleted = $this->service->deleteUser($id, $data->email);
+        if (!$deleted['success']) {
             return $this->jsonResponse(['error' => 'Failed to delete user', 'data' => []], 500);
         }
         return $this->jsonResponse(['message' => 'User deleted successfully'], 200);

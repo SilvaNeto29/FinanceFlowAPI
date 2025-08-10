@@ -76,6 +76,6 @@ abstract class Model
     public function deleteWhere(array $where): array
     {
         $rows = $this->db->delete(static::$table, $where);
-        return ['rows' => $rows, 'success' => $this->db->error === [null, null, null]];
+        return ['rows' => $rows, 'success' => $this->db->error === null];
     }
 }

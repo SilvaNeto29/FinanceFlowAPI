@@ -34,8 +34,8 @@ class UserService
     {
         return $this->user->update($id, $data);
     }
-    public function deleteUser(int $id): bool
+    public function deleteUser(int $id, string $email): array
     {
-        return $this->user->delete($id);
+        return $this->user->deleteWhere(['id' => $id, 'email' => $email]);
     }
 }

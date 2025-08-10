@@ -17,26 +17,28 @@ $router->post('/api/v1/auth/logout', [AuthController::class, 'logout'], AuthMidd
 $router->post('/api/v1/auth/refresh', [AuthController::class, 'refresh']);
 $router->get('/api/v1/auth/me', [AuthController::class, 'me'], AuthMiddleware::class);
 //todo Reset password
-//Todo Email
+//Todo Email register, reset password
 
 //Admin
-$router->get('/api/v1/users', function (): void {
-    (new UserController())->getAll();
+$router->get('/api/v1/users', function (): string {
+    return (new UserController())->getAll();
 });
-$router->get('/api/v1/users/{id}', function ($id): void {
+$router->get('/api/v1/users/{id}', function ($id): string {
     RouterHelper::isInt($id, ['error' => 'Unformated id']) ;
-    (new UserController())->getById($id);
+    return (new UserController())->getById($id);
 });
-$router->patch('/api/v1/users/{id}', function ($id): void {
-    RouterHelper::isInt($id, ['error' => 'Unformated id']) ;
-    (new UserController())->update($id, new Request());
+$router->patch('/api/v1/users/{id}', function ($id): string {
+    RouterHelper::isInt($id, ['error' => 'Unformated id']);
+    return (new UserController())->update($id, new Request());
 });
-$router->get('/api/v1/users/{doc}', function ($doc): void {
+$router->get('/api/v1/users/{doc}', function ($doc): string {
     RouterHelper::isString($doc);
-    (new UserController())->getByDoc($doc);
+    return (new UserController())->getByDoc($doc);
 });
-//Todo $router->put(); User
-//Todo $router->delete(); User
+$router->delete('/api/v1/users/{id}', function ($id): string {
+    RouterHelper::isInt($id, ['error' => 'Unformated id']);
+    return (new UserController())->delete($id, new Request());
+});
 //todo roles
 /////////////
 
@@ -46,7 +48,7 @@ $router->get('/api/v1/accounts/{id}', function ($id){
     (new AccountsController())->get($id);
 });
 $router->post('/api/v1/accounts',[AccountsController::class, 'create']);//TodoAuthMiddleware::class
-$router->put('/api/v1/accounts',[AccountsController::class, 'edit']);
+$router->put('/api/v1/accounts',[AccountsController::class, 'edit']);//Todo Alterar o método http
 $router->delete('/api/v1/accounts',[AccountsController::class, 'delete']);
 
 

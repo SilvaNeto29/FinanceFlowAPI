@@ -20,7 +20,7 @@ class User extends Model
     {
         return $this->db->get(
             static::$table,
-            ['id','name', 'email'],
+            ['id','name', 'email', 'username'],
             ['id' => $id]
         );
     }
@@ -28,7 +28,7 @@ class User extends Model
     {
         return $this->db->get(
             static::$table,
-            ['name', 'email', 'username', 'age', 'phone'],
+            ['name', 'email', 'username'],
             ['username' => $username]
         );
     }
@@ -56,7 +56,7 @@ class User extends Model
         /** @phpstan-ignore-next-line */
         return $this->db->select(
             static::$table,
-            ['name', 'email'],
+            ['name', 'email', 'username'],
         );
     }
 }
